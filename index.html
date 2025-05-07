@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>معلوماتي الشخصية</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    input, button {
+      margin: 10px 0;
+      padding: 10px;
+      width: 80%;
+      max-width: 300px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .icon-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px auto;
+      width: fit-content;
+      text-decoration: none;
+      color: white;
+      font-size: 18px;
+    }
+    .icon-link img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+    #output {
+      margin-top: 30px;
+      display: none;
+    }
+    #share-link {
+      margin-top: 20px;
+      word-break: break-word;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <div id="form">
+    <h2>أدخل بياناتك</h2>
+    <input type="text" id="name" placeholder="اسمك"><br>
+    <input type="text" id="instagram" placeholder="رابط إنستجرام"><br>
+    <input type="text" id="tiktok" placeholder="رابط تيك توك"><br>
+    <input type="text" id="facebook" placeholder="رابط فيسبوك"><br>
+    <input type="text" id="whatsapp" placeholder="رابط واتساب أو رقم"><br>
+    <button onclick="generateLink()">تأكيد ومشاركة</button>
+  </div>
+
+  <div id="output">
+    <h2 id="displayName"></h2>
+    <div id="links"></div>
+    <p id="share-link"></p>
+  </div>
+
+  <script>
+    const platforms = [
+      { id: "instagram", name: "إنستجرام", icon: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" },
+      { id: "tiktok", name: "تيك توك", icon: "https://upload.wikimedia.org/wikipedia/commons/2/20/TikTok_Logo.png" },
+      { id: "facebook", name: "فيسبوك", icon: "https://upload.wikimedia.org/wikipedia/commons/1/16/Facebook-icon-1.png" },
+      { id: "whatsapp", name: "واتساب", icon: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" }
+    ];
+    function generateLink() {
+      const name = document.getElementById('name').value.trim();
+      if (name === "") return alert("من فضلك أدخل اسمك.");
+      const params = new URLSearchParams();
+      params.set("name", name);
+      platforms.forEach(p => {
+        const val = document.getElementById(p.id).value.trim();
+        if (val) params.set(p.id, val);
+      });
+      const fullUrl = ${location.origin}${location.pathname}?${params.toString()};
+      showLinks(Object.fromEntries(params.entries()));
+      document.getElementById("share-link").innerHTML = انسخ الرابط وشاركه:<br><a href="${fullUrl}" target="_blank">${fullUrl}</a>;
+    }
+    function showLinks(data) {
+      document.getElementById("form").style.display = "none";
+      document.getElementById("output").style.display = "block";
+      document.getElementById("displayName").textContent = data.name || "";
+      const linksContainer = document.getElementById("links");
+      linksContainer.innerHTML = "";
+      platforms.forEach(p => {
+        const val = data[p.id];
+        if (val) {
+          const a = document.createElement('a');
+          a.href = val.startsWith("http") ? val : "https://wa.me/" + val;
+          a.target = "_blank";
+          a.className = "icon-link";
+          const img = document.createElement('img');
+          img.src = p.icon;
+          img.alt = p.name;
+          const span = document.createElement('span');
+          span.textContent = p.name;
+          a.appendChild(img);
+          a.appendChild(span);
+          linksContainer.appendChild(a);
+        }
+      });
+    }
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("name")) {
+        const data = Object.fromEntries(params.entries());
+        showLinks(data);
+      }
+    };
+  </script>
+</body>
+</html>
