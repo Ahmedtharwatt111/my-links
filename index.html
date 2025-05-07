@@ -2,123 +2,151 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>معلوماتي الشخصية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موقعي الشخصي</title>
   <style>
     body {
       background-color: black;
       color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 30px;
-    }
-    input, button {
-      margin: 10px 0;
-      padding: 10px;
-      width: 80%;
-      max-width: 300px;
-      border-radius: 5px;
-      border: none;
-      font-size: 16px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    .icon-link {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 10px auto;
-      width: fit-content;
-      text-decoration: none;
+      height: 100vh;
+      flex-direction: column;
+    }
+    
+    .content {
+      text-align: center;
+    }
+    
+    #inputForm {
+      display: block;
+    }
+    
+    #output {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .social-links {
+      margin-top: 20px;
+    }
+
+    .social-links a {
       color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 20px;
+    }
+    
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-top: 20px;
       font-size: 18px;
     }
-    .icon-link img {
-      width: 30px;
-      height: 30px;
-      margin-right: 10px;
-    }
-    #output {
-      margin-top: 30px;
-      display: none;
-    }
-    #share-link {
-      margin-top: 20px;
-      word-break: break-word;
-      color: #00ffcc;
+
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
-  <div id="form">
-    <h2>أدخل بياناتك</h2>
-    <input type="text" id="name" placeholder="اسمك"><br>
-    <input type="text" id="instagram" placeholder="رابط إنستجرام"><br>
-    <input type="text" id="tiktok" placeholder="رابط تيك توك"><br>
-    <input type="text" id="facebook" placeholder="رابط فيسبوك"><br>
-    <input type="text" id="whatsapp" placeholder="رابط واتساب أو رقم"><br>
-    <button onclick="generateLink()">تأكيد ومشاركة</button>
-  </div>
 
-  <div id="output">
-    <h2 id="displayName"></h2>
-    <div id="links"></div>
-    <p id="share-link"></p>
+  <div class="content">
+    <h1>موقعي الشخصي</h1>
+
+    <!-- نموذج الإدخال -->
+    <div id="inputForm">
+      <label for="name">الاسم:</label><br>
+      <input type="text" id="name" placeholder="أدخل اسمك"><br><br>
+
+      <label for="instagram">حساب Instagram:</label><br>
+      <input type="text" id="instagram" placeholder="أدخل رابط حسابك على Instagram"><br><br>
+
+      <label for="tiktok">حساب TikTok:</label><br>
+      <input type="text" id="tiktok" placeholder="أدخل رابط حسابك على TikTok"><br><br>
+
+      <label for="facebook">حساب Facebook:</label><br>
+      <input type="text" id="facebook" placeholder="أدخل رابط حسابك على Facebook"><br><br>
+
+      <label for="whatsapp">حساب WhatsApp:</label><br>
+      <input type="text" id="whatsapp" placeholder="أدخل رقم WhatsApp"><br><br>
+
+      <button id="confirmButton" onclick="confirmData()">تأكيد</button>
+    </div>
+
+    <!-- عرض البيانات بعد التأكيد -->
+    <div id="output">
+      <h2>البيانات المدخلة:</h2>
+      <p id="outputName"></p>
+      <p id="outputInstagram"></p>
+      <p id="outputTiktok"></p>
+      <p id="outputFacebook"></p>
+      <p id="outputWhatsapp"></p>
+
+      <!-- روابط السوشيال ميديا -->
+      <div class="social-links">
+        <a href="#" id="instaLink" target="_blank">Instagram</a>
+        <a href="#" id="tiktokLink" target="_blank">TikTok</a>
+        <a href="#" id="facebookLink" target="_blank">Facebook</a>
+        <a href="#" id="whatsappLink" target="_blank">WhatsApp</a>
+      </div>
+
+      <button onclick="shareLink()">مشاركة الرابط</button>
+    </div>
   </div>
 
   <script>
-    const platforms = [
-      { id: "instagram", name: "إنستجرام", icon: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" },
-      { id: "tiktok", name: "تيك توك", icon: "https://upload.wikimedia.org/wikipedia/commons/2/20/TikTok_Logo.png" },
-      { id: "facebook", name: "فيسبوك", icon: "https://upload.wikimedia.org/wikipedia/commons/1/16/Facebook-icon-1.png" },
-      { id: "whatsapp", name: "واتساب", icon: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" }
-    ];
-    function generateLink() {
-      const name = document.getElementById('name').value.trim();
-      if (name === "") return alert("من فضلك أدخل اسمك.");
-      const params = new URLSearchParams();
-      params.set("name", name);
-      platforms.forEach(p => {
-        const val = document.getElementById(p.id).value.trim();
-        if (val) params.set(p.id, val);
-      });
-      const fullUrl = ${location.origin}${location.pathname}?${params.toString()};
-      showLinks(Object.fromEntries(params.entries()));
-      document.getElementById("share-link").innerHTML = انسخ الرابط وشاركه:<br><a href="${fullUrl}" target="_blank">${fullUrl}</a>;
-    }
-    function showLinks(data) {
-      document.getElementById("form").style.display = "none";
-      document.getElementById("output").style.display = "block";
-      document.getElementById("displayName").textContent = data.name || "";
-      const linksContainer = document.getElementById("links");
-      linksContainer.innerHTML = "";
-      platforms.forEach(p => {
-        const val = data[p.id];
-        if (val) {
-          const a = document.createElement('a');
-          a.href = val.startsWith("http") ? val : "https://wa.me/" + val;
-          a.target = "_blank";
-          a.className = "icon-link";
-          const img = document.createElement('img');
-          img.src = p.icon;
-          img.alt = p.name;
-          const span = document.createElement('span');
-          span.textContent = p.name;
-          a.appendChild(img);
-          a.appendChild(span);
-          linksContainer.appendChild(a);
-        }
-      });
-    }
-    window.onload = function () {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("name")) {
-        const data = Object.fromEntries(params.entries());
-        showLinks(data);
+    function confirmData() {
+      var name = document.getElementById("name").value;
+      var instagram = document.getElementById("instagram").value;
+      var tiktok = document.getElementById("tiktok").value;
+      var facebook = document.getElementById("facebook").value;
+      var whatsapp = document.getElementById("whatsapp").value;
+
+      if (name && instagram && tiktok && facebook && whatsapp) {
+        alert("تم تأكيد البيانات بنجاح!");
+
+        // إخفاء نموذج الإدخال
+        document.getElementById("inputForm").style.display = "none";
+
+        // إظهار البيانات
+        document.getElementById("output").style.display = "block";
+
+        // ملء البيانات في القسم النهائي
+        document.getElementById("outputName").innerText = "الاسم: " + name;
+        document.getElementById("outputInstagram").innerText = "Instagram: " + instagram;
+        document.getElementById("outputTiktok").innerText = "TikTok: " + tiktok;
+        document.getElementById("outputFacebook").innerText = "Facebook: " + facebook;
+        document.getElementById("outputWhatsapp").innerText = "WhatsApp: " + whatsapp;
+
+        // تعيين روابط السوشيال ميديا
+        document.getElementById("instaLink").href = instagram;
+        document.getElementById("tiktokLink").href = tiktok;
+        document.getElementById("facebookLink").href = facebook;
+        document.getElementById("whatsappLink").href = "https://wa.me/" + whatsapp;
+      } else {
+        alert("من فضلك أكمل جميع البيانات.");
       }
-    };
+    }
+
+    function shareLink() {
+      var url = window.location.href;
+      var text = "تواصل معي عبر موقعي الشخصي: " + url;
+      var whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+      var facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
+
+      // يمكن اختيار الوسيلة المناسبة للمشاركة
+      window.open(whatsappUrl, "_blank");
+      // window.open(facebookUrl, "_blank"); // لتفعيل مشاركة فيسبوك
+    }
   </script>
+
 </body>
 </html>
